@@ -40,8 +40,9 @@ enum editorKey {
 };
 
 enum editorHighlight {
-  Hl_NORMAL = 0,
-  HL_NUMBER
+  HL_NORMAL = 0,
+  HL_NUMBER,
+  HL_MATCH
 };
 
 /*** data ***/
@@ -193,7 +194,7 @@ int getWindowSize(int *rows, int *cols) {
 
 void editorUpdateSyntax(erow *row) {
   row->hl = realloc(row->hl, row->size);
-  memset(row->hl, Hl_NORMAL, row->rsize);
+  memset(row->hl, HL_NORMAL, row->rsize);
 
   int i;
   for (i = 0; i < row->rsize; i++) {
@@ -206,6 +207,7 @@ void editorUpdateSyntax(erow *row) {
 int editorSyntaxToColour(int hl) {
   switch (hl) {
     case HL_NUMBER: return 31;
+    case HL_MATCH: return 34;
     default: return 37;
   }
 }
@@ -474,6 +476,8 @@ void editorFindCallback(char *query, int key) {
       E.cy = current;
       E.cx = editorRowRxtoCx(row, match - row->render);
       E.rowoff = E.numrows;
+
+      memset(&row->hl[match - row->render], HL_MATCH, strlen(query));
       break;
     }
   }
@@ -571,7 +575,7 @@ void editorDrawRows(struct abuf *ab) {
       int currentColour = -1;
       int j;
       for (j = 0; j < len; j++) {
-        if (hl[j] == Hl_NORMAL) {
+        if (hl[j] == HL_NORMAL) {
           if (currentColour != -1) {
             abAppend(ab, "\x1b[39m", 5);
             currentColour = -1;
