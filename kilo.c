@@ -444,6 +444,15 @@ void editorSave() {
 void editorFindCallback(char *query, int key) {
   static int lastMatch = -1;
   static int direction = 1;
+
+  static int savedHlLine;
+  static int *savedHl = NULL;
+
+  if (savedHl) {
+    memcpy(E.row[savedHlLine].hl, savedHl, E.row[savedHlLine].rsize);
+    free(savedHl);
+    savedHl = NULL;
+  }
   
   if (key == '\r' || key == '\x1b') {
     lastMatch = -1;
@@ -477,6 +486,9 @@ void editorFindCallback(char *query, int key) {
       E.cx = editorRowRxtoCx(row, match - row->render);
       E.rowoff = E.numrows;
 
+      savedHlLine = current;
+      savedHl = malloc(row->rsize);
+      memcpy(savedHl, row->hl, row->rsize);
       memset(&row->hl[match - row->render], HL_MATCH, strlen(query));
       break;
     }
