@@ -267,6 +267,12 @@ void editorSelectSyntaxHighlight() {
       int isExt = (s->filematch[i][0] == '.');
       if ((isExt && ext && !strcmp(ext, s->filematch[i])) || (!isExt && strstr(E.filename, s->filematch[i]))) {
         E.syntax = s;
+
+        int filerow;
+        for (filerow = 0; filerow < E.numrows; filerow++) {
+          editorUpdateSyntax(&E.row[filerow]);
+        }
+
         return;
       }
       i++;
