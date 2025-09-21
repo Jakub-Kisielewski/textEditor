@@ -1,5 +1,5 @@
 /*** includes ***/
-// test
+
 #include <stddef.h>
 #define _DEFAULT_SOURCE
 #define _BSD_SOURCE
@@ -736,7 +736,17 @@ void editorDrawRows(struct abuf *ab) {
       int currentColour = -1;
       int j;
       for (j = 0; j < len; j++) {
-        if (hl[j] == HL_NORMAL) {
+        if (iscntrl(c[j])) {
+          char sym = (c[j] <= 26) ? '@' + c[j] : '?';
+          abAppend(ab, "\x1b[7m", 4);
+          abAppend(ab, &sym, 1);
+          abAppend(ab, "\x1b[m", 3);
+          if (currentColour != -1) {
+            char buf[16];
+            int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", currentColour);
+            abAppend(ab, buf, clen);
+          }
+        } else if (hl[j] == HL_NORMAL) {
           if (currentColour != -1) {
             abAppend(ab, "\x1b[39m", 5);
             currentColour = -1;
