@@ -47,6 +47,8 @@ enum editorKey {
 enum editorHighlight {
   HL_NORMAL = 0,
   HL_COMMENT,
+  HL_KEYWORD1,
+  HL_kEYWORD2,
   HL_STRING,
   HL_NUMBER,
   HL_MATCH
@@ -57,6 +59,7 @@ enum editorHighlight {
 struct editorSyntax {
   char *filetype;
   char **filematch;
+  char **keywords;
   char *singlelineCommentStart;
   int flags;
 };
@@ -91,11 +94,19 @@ struct editorConfig E;
 /*** filetypes ***/ 
 
 char *CHlExtensions[] = { ".c", ".h", ".cpp", NULL };
+char *CHlKeywords[] = {
+  "switch", "if", "while", "for", "break", "continue", "return", "else",
+  "struct", "union", "typedef", "static", "enum", "class", "case",
+
+  "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
+  "void|", NULL
+};
 
 struct editorSyntax HLDB[] = {
   {
     "c",
-    CHlExtensions, 
+    CHlExtensions,
+    CHlKeywords,
     "//",
     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
   },
@@ -231,6 +242,8 @@ void editorUpdateSyntax(erow *row) {
 
   if (E.syntax == NULL) return;
 
+  char **keywords = E.syntax->keywords;
+
   char *scs = E.syntax->singlelineCommentStart;
   int scsLen = scs ? strlen(scs) : 0;
 
@@ -281,6 +294,25 @@ void editorUpdateSyntax(erow *row) {
       }
     }
 
+    if (prevSep) {
+      int j;
+      for (j = 0; keywords[j]; j++) {
+        int klen = strlen(keywords[j]);
+        int kw2 = keywords[j][klen - 1] == '|';
+        if (kw2) klen--;
+
+        if (!strncmp(&row->render[i], keywords[j], klen) && isSeparator(row->render[i + klen])) {
+          memset(&row->hl[i], kw2 ? HL_kEYWORD2 : HL_KEYWORD1, klen);
+          i += klen;
+          break;
+        }
+      }
+      if (keywords[j] != NULL) {
+        prevSep = 0;
+        continue;
+      }
+    }
+
     prevSep = isSeparator(c);
     i++;
   }
@@ -289,6 +321,8 @@ void editorUpdateSyntax(erow *row) {
 int editorSyntaxToColour(int hl) {
   switch (hl) {
     case HL_COMMENT: return 36;
+    case HL_KEYWORD1: return 33;
+    case HL_kEYWORD2: return 32;
     case HL_STRING: return 35;
     case HL_NUMBER: return 31;
     case HL_MATCH: return 34;
