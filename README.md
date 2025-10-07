@@ -5,7 +5,6 @@ This project is a lightweight, terminal-based text editor inspired by the [origi
 This is a learning project for myself to get familiar with low level manipulation of the terminal and interacting with the OS more confortably via system calls.
 
 # Features
-* Raw terminal mode - no external dependencies 
 * Basic text editing - insert, delete, new lines 
 * File persistence - Saving, Opening 
 * Modular Syntax Highlighting - currently supports .c, .h and .cpp files 
