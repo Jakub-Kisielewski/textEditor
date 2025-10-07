@@ -20,7 +20,7 @@ Ctrl-s -> Save file
 Ctrl-Q -> Quit
 Ctrl-F -> Search
 Arrow keys -> Move cursor
-`Home`/`End`/`PageUp`/`PageDown` -> Navigation
+Home/End/PageUp/PageDown -> Navigation
 ```
 
 # Build & Run
