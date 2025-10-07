@@ -2,7 +2,7 @@
 This project is a lightweight, terminal-based text editor inspired by the [original](https://github.com/antirez/kilo) Kilo editor by Salvatore Sanfilippo.
 
 # What I learned
-This is a learning project for myself to get familiar with low level manipulation of the terminal and interacting with the OS more confortably e.g. system calls.
+This is a learning project for myself to get familiar with low level manipulation of the terminal and interacting with the OS more confortably via system calls.
 
 # Features
 Raw terminal mode - no external dependencies
@@ -24,4 +24,4 @@ Arrow keys -> Move cursor
 ```
 
 # Build & Run
-To run this you will need GCC or Clang, a linux or macOS terminal. Once you have cloned this repository then run `./kilo [filename]`. You can open the text editor with passing in a file. In this case the text editor will create a file when you save.
+To run this you will need GCC or Clang, a linux or macOS terminal. Once you have cloned this repository, run `./kilo [filename]`. If the file doesn't exist, then this text editor will create it when you save.
